@@ -291,24 +291,5 @@ body {
   </div>
 </form>
 
-<br><br>
-
-<footer class="footer-distributed">
-
-  <div class="footer-center">
-
-    <p class="footer-links">
-      <a class="link-1" href="#">Inicio</a>
-
-      <a href="pesquisa.php">Pesquisa</a>
-
-      <a>Contato 999-999-999</a>
-    </p>
-
-    <p>Play Games &copy; 2022</p>
-  </div>
-
-</footer>
-
 </body>
 </html>

@@ -181,9 +181,6 @@ if (isset($_POST['submit'])) {
         }
     }
     
-    if (isset($_GET['action']) && $_GET['action'] == 'joined') {
-        $successMsg = 'Registration successful Now you can <a href="/">login</a>';
-    }
 ?>
 
 <form action="" method="POST" class="login-email">

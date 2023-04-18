@@ -142,69 +142,56 @@ body {
 </head>
 <body>
 <?php 
-    $hostname='localhost';
-    $username='root';
-    $password='';
-    $bd='papbd';
-    $conectar= mysqli_connect($hostname, $username, $password,$bd);
-
-    session_start();
-
-    error_reporting(0);
+    require 'conexao.php';
 
     if($_SESSION['loggedIn']==NULL){
-        echo "Ainda não está numa conta!";
+        header("Location: index.php");
     }else{
       $email= $_SESSION['utilizador'] [1];
-      $pass= $_SESSION['utilizador'] [2];   
+      $pass= $_SESSION['utilizador'] [2];
+      $id_utilizador= $_SESSION['utilizador'] [3];
     }
 
     if (isset($_POST['submit'])) {
-
+          $passAntiga= $_POST['passAntiga'];
           $novaPass = $_POST['novaPass'];
           $confirmarpass= $_POST['confirmarpass'];
 
-          if($confirmarpass== $novaPass){
+          if($confirmarpass == $novaPass){
 
           	if($pass == $novaPass){
-				        echo "<script> alert('A nova palavra pass não pode ser igual á anterior!')</script>";
+				echo "<script> alert('A nova palavra pass não pode ser igual á anterior!')</script>";
                 $novaPass = "";
                 $confirmarpass= "";
+
           	}else{
               if (preg_match('/\s/', $novaPass) || strlen($novaPass)<8) {
-              echo "<script>alert('Woops! Por favor digite um formato de password correto.')</script>";
+                echo "<script>alert('Woops! Por favor digite um formato de password correto.')</script>";
+              
               }else{
-    	            $sql = "SELECT password FROM utilizadores WHERE email='$email'";
-    	            $result = mysqli_query($conectar, $sql);
-    	      
-    	            if ($result->num_rows > 0) {
 
-    	              $sql = "UPDATE utilizadores SET password='$novaPass' WHERE email='$email'";
-    	              $result = mysqli_query($conectar, $sql);
+                $sql = 'UPDATE utilizadores SET password = :password WHERE Id_utilizador = :id_utilizador';
 
-    	              if(!$result){
-    	                echo "<script> alert('woops! Parece estar a acontecer um erro!')</script>";
+                // preparar declaração
+                $stmt = $connect->prepare($sql);
 
-    	                $novaPass = "";
-    	                $confirmarpass= "";
+                // atribuir valores aos parametros
+                $stmt->bindParam(':id_utilizador', $id_utilizador, PDO::PARAM_INT);
+                $stmt->bindParam(':password', $novaPass);
 
-    	              }else{
-    	                $_SESSION['mensagem'] = 'Dados alterados com sucesso.';
+                // exexutar a atualização
+                if ($stmt->execute()) {
 
-    	                $sql = "SELECT * FROM utilizadores WHERE email='$email'";
-    	                $result = mysqli_query($conectar, $sql);
-    	                $row = mysqli_fetch_assoc($result);
-    	                $_SESSION['utilizador'] = array($row['nome'], $row['email'], $row['password']);
+                    $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE email = :email');
+                    $stmt->execute(array(':email' => $email));
+                    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $_SESSION['mensagem'] = 'Dados atualizados com sucesso.';
 
-    	                header("Location: index.php");
-    	              }
-    	            }else {
-    	                echo "<script> alert('Email não existe na base de dados!')</script>";
-    	                $novaPass = "";
-    	                $confirmarpass= "";
-    	              }
+                    $_SESSION['utilizador'] = array($data['nome'], $data['email'], $data['password'], $data['Id_utilizador'], $data['imagemPerfil']);
+                    header("Location: Perfil.php");
+                }
               }
-  	        }
+          }
           }else{
               echo "<script> alert('As passwords devem ser iguais!')</script>";
               $novaPass = "";
@@ -223,9 +210,11 @@ body {
         
         <i class="fa fa-user"></i>
         
-        <input type="password" placeholder="novaPass" id="myInput" name="novaPass" value="<?php echo $novaPass; ?>" required>
+        <input type="password" required="required" placeholder="Password Antiga" id="myInput" name="passAntiga" >
 
-        <input type="password" placeholder="confirmarpass" id="myInput" name="confirmarpass" value="<?php echo $confirmarpass; ?>" required>
+        <input type="password" required="required" placeholder="Nova Password" id="myInput" name="novaPass" >
+
+        <input type="password" required="required" placeholder="Confirmar Password" id="myInput" name="confirmarpass">
 
       
     <div class="log-sign">
@@ -233,7 +222,7 @@ body {
            Atualizar
         </button>
         <br>
-        <a href="index.php">
+        <a href="Perfil.php">
           <button class="voltar" style="align-content: center;" form="voltarform">
               Cancelar
           </button>

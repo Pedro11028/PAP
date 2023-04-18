@@ -235,9 +235,7 @@ nav ul li ul li a:hover {
 		<li  class="direita"><a><?php echo strtok(mb_strimwidth("$nome", 0,11, "..."), " ");?></a>
 			<ul class="dropar">
 				<li><a class="colorBlack" href="perfil.php">Perfil</a></li>
-                <li><a class="colorBlack" href="renamePass.php">Alterar pass</a></li>
 				<li><a class="colorBlack" href="Logout.php">Log Out</a></li>
-				<li><a class="colorBlack" href="">Eliminar</a></li>
 			</ul>
 		</li>
 	<?php else: ?>  

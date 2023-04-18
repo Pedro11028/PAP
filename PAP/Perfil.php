@@ -8,7 +8,6 @@
 
 * {
     margin: 0 auto;
-    padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
   }
@@ -96,39 +95,54 @@ nav ul li ul li a:hover {
   border-left-color: #0000FF;
   width: 100px;
   height: 100px;
-  position: absolute;
-  left: 29%;
+
 }
 
 .divPosition{
     border-style: solid;
     border-color: coral;
     position: left;
-    width: 600px;
-    height: 140px;
+    width: 30%;
+    height: 110px;
 }
 
 .Informações{
-    border-style: solid;
-    border-color: coral;
-    position: left;
     width: 560px;
-    height: 270px;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 5%;
+}
+
+.borderFront{
+    position:relative;
 }
 
 .changeImg{
-    position: absolute;
-    top: 17%;
-    left: 38%;
-    margin-left: -.2em;
-    margin-top: -.4em;
-    width: 100px;
+    position:absolute;
+    left: 130px;
+    top: 50px;
+    width: 110px;
     height: 30px;
-    color: #138ABE;
-    background-color: white;
-    border-radius: 4px;
-    transition: background-color 1s;
+    padding: 5px;
+    margin-top: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid #435688;
+    outline: none;
+    background: white;
 
+}
+
+.changeImg:hover{
+    background:#138ABE;
+    color: white;
+
+}
+
+.textInsertImg{
+    text-indent: 130px;
+    font-size: 13px;
 }
 
 .input-info {
@@ -149,10 +163,10 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
     overflow: hidden;
 }
 
-.input-info input:hover{
-    background: gray;
-    color :white
+th{
+  text-align: left;
 }
+
 
 .button{
     padding: 5px;
@@ -163,23 +177,38 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
     transition: 0.5s;
     border: 1px solid #435688;
     outline: none;
+    background: white;
 }
 
+.button:hover{
+    background: #dcdcdc;
+}
+
+.alterarFuncoes{
+    color:red;
+    text-decoration:none;
+    transition: 0.5s;
+}
+.alterarFuncoes:hover{
+    color:purple;
+}
+
+body{
+    background-color: gray;
+}
 </style>
 
 </head>
 <body>
 <?php
+    require 'conexao.php';
 
-    $hostname='localhost';
-    $username='root';
-    $password='';
-    $bd='projetobd';
-    $conectar= mysqli_connect($hostname, $username, $password,$bd);
-
-    session_start();
-
-    error_reporting(0);
+    if($_SESSION['utilizador']==true){
+       $nome= $_SESSION['utilizador'] [0];
+       $email= $_SESSION['utilizador'] [1];
+       $password= $_SESSION['utilizador'] [2];
+       $id_utilizador= $_SESSION['utilizador'] [3];
+    }
 
     if(!empty($_SESSION['mensagem'])) {
         $mensagem = $_SESSION['mensagem'];
@@ -187,15 +216,76 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
         unset($_SESSION['mensagem']);
     }   
 
-    if($_SESSION['utilizador']==true){
-      $nome= $_SESSION['utilizador'] [0];
-      $email= $_SESSION['utilizador'] [1];
-      $password= $_SESSION['utilizador'] [2]; 
+        $sql = $connect->prepare('SELECT * FROM utilizadores WHERE Id_utilizador = :id_utilizador');
+        $sql-> execute(array(':id_utilizador' => $id_utilizador));
+        $data = $sql->fetch(PDO::FETCH_ASSOC);
+
+        $guardarNome= "$data[nome]";
+
+        $pontuacao= "";
+        $pontuacao = "$data[pontuacao]";
+        $nivel= "0";
+
+        intval($pontuacao);
+
+        switch (true) {
+
+            case ($pontuacao >=100 && $pontuacao <200):
+                $nivel="1";
+                break;
+
+            case ($pontuacao >=200 && $pontuacao <300):
+                $nivel="2";
+                break;
+
+            case ($pontuacao >=300 && $pontuacao <400):
+                $nivel="3";
+                break;
+
+            case ($pontuacao >=400 && $pontuacao <500):
+                $nivel="4";
+                break;
+            case $pontuacao >=500:
+                $nivel="5";
+                break;
+        }
+
+    if (isset($_POST['alterarNome'])) {
+        $errMsg = '';
+        // Obter nome do FROM
+        $nome = $_POST['nome'];
+
+        try {
+            //Verificar se o nome é diferete do atual
+            if ($guardarNome != $nome) {
+                
+                $sql = 'UPDATE utilizadores SET nome = :nome WHERE Id_utilizador = :Id_utilizador';
+
+                // preparar declaração
+                $stmt = $connect->prepare($sql);
+
+                // atribuir valores aos parametros
+                $stmt->bindParam(':Id_utilizador', $id_utilizador, PDO::PARAM_INT);
+                $stmt->bindParam(':nome', $nome);
+
+                // exexutar a atualização
+                if ($stmt->execute()) {
+                    echo "<script>alert('O seu nome foi atualizado com sucesso!')</script>";
+                }
+
+                $guardarNome="$nome";
+                
+            } else {
+            echo "<script>alert('Woops! O nome não pode ser o mesmo.')</script>";
+            
+            }
+
+    }catch(PDOException $error) {
+        echo $error->getMessage();
     }
-
-  $_SESSION['resgistrar']=false;
+}
+    
 ?>
-
 <nav class="nav">
 	<ul>
 		<li>
@@ -217,43 +307,105 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
     </ul>
 </nav>
 
-<?php
-    require 'conexao.php';
 
-    if($_SESSION['utilizador']==true){
-      $nome= $_SESSION['utilizador'] [0];
-      $email= $_SESSION['utilizador'] [1];
-      $password= $_SESSION['utilizador'] [2];
-      $id_utilizador= $_SESSION['utilizador'] [3];
-    }
-
-        if ($conn->connect_error){
-            die("Connection failed: ". $conn->connect_error);
-        }
-
-        $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE Id_utilizador = :id_utilizador');
-        $stmt-> execute(array(':id_utilizador' => $id_utilizador));
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-?>
 <br>
 
-<div class='divPosition'> 
-    <img class='imgPerfil' <?php echo("src='$data[imagemPerfil]'") ?>>
-    <button class='changeImg'>Alterar Imagem</button>
-</div>
-<hr>
 <div class='Informações'>
+    <div class="borderFront">
+        <img class='imgPerfil' <?php echo("src='$data[imagemPerfil]'") ?>>
+        <button class='changeImg'>Alterar Imagem</button>
+    </div>
+    <div>
+        <p class="textInsertImg">Allowed JPG, GIF or PNG. Max size of 800K</p>
+    </div>
+    <div class="showLines">
+        <form action="" method="POST">
+            <div class="input-info">
+                <label class="form-label">Nome Utilizador</label> <p>
+                <input type="text" required="required" name="nome" <?php echo("value='$guardarNome'") ?>>
+                <button class="button" name="alterarNome">Mudar Nome</button>
+            </div>
+        </form>
+    </div>
     <div>
         <form action="" method="POST">
             <div class="input-info">
-                <label class="form-label">Nome: </label>
-                <input type="text" name="aaa" <?php echo("value='$data[nome]'") ?>>
-                <button class="button" >Mudar Nome</button>
+                <label class="form-label">Email Utilizador</label><p>
+                <input type="text" name="email" <?php echo("value='$data[email]'") ?>>&nbsp
+                <button class="button" >Mudar Email</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="input-info">
+            <table style="width:100%">
+                <tr>
+                  <th>
+                     <label class="form-label" align="left">Quizzes Criados</label>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                     <label> <?php echo("$data[quizzCriados]") ?>&nbsp </label>
+                  </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <div class="input-info">
+            <table style="width:100%">
+                <tr>
+                  <th>
+                     <label class="form-label" align="left">Quizzes Realizados</label>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                     <label> <?php echo("$data[quizzesRealizados]") ?>&nbsp </label>
+                  </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <div class="input-info">
+            <table style="width:100%">
+                <tr>
+                  <th>
+                     <label class="form-label" align="left">Número de avaliações feitas</label>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                     <label> <?php echo("$data[num_avaliações]") ?>&nbsp </label>
+                  </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <form action="" method="POST">
+            <div class="input-info">
+                <a class="alterarFuncoes" href="renamePass.php">Alterar password</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <form action="" method="POST">
+            <div class="input-info">
+                <a class="alterarFuncoes" href="elimin_conta.php">Excluir Conta</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <form action="" method="POST">
+            <div class="input-info">
+                <a class="alterarFuncoes" href="logout.php">Sair</button>
             </div>
         </form>
     </div>
 </div>
-
 <br>
         
 
