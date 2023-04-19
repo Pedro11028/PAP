@@ -199,15 +199,7 @@ body {
 </head>
 <body>
 <?php 
-    $hostname='localhost';
-    $username='root';
-    $password='';
-    $bd='papbd';
-    $conectar= mysqli_connect($hostname, $username, $password,$bd);
-
-    session_start();
-
-    error_reporting(0);
+    require 'conexao.php';
     
     if($_SESSION['loggedIn']==NULL){
         header("Location: index.php");
@@ -221,37 +213,39 @@ body {
       $confirmarpass= $_POST['confirmarpass'];
 
           if($confirmarpass== $password){
-            $sql = "SELECT * FROM utilizadores WHERE email='$email' AND password='$password'";
-            $result = mysqli_query($conectar, $sql);
 
-            if ($result->num_rows > 0) {
-
-              $sql = "DELETE FROM utilizadores WHERE ID_utilizador = '$ID_utilizador'";
-              $result = mysqli_query($conectar, $sql);
-
-              $sql = "DELETE FROM utilizadores WHERE ID_utilizador = '$ID_utilizador'";
-              $result = mysqli_query($conectar, $sql);
-
-              $sql = "DELETE FROM utilizadores WHERE ID_utilizador = '$ID_utilizador'";
-              $result = mysqli_query($conectar, $sql);
-
-              $sql = "DELETE FROM utilizadores WHERE ID_utilizador = '$ID_utilizador'";
-              $result = mysqli_query($conectar, $sql);
+              //Buscar a palavra pass na base de dados
+              $stmt = $connect->prepare('SELECT password FROM utilizadores WHERE email = :email');
+              $stmt->execute(array(':email' => $email));
+              $data = $stmt->fetch();
               
-              if(!$result){
-                echo "<script> alert('Password incorreta!')</script>";
-                $password = "";
-                $confirmarpass= "";
+              $saveData="$data[password]";
+              
+              //Se não existir então guarda os dados
+              if ($saveData == $password) {
 
-              }else{
+
+              $sql = 'DELETE FROM utilizadores WHERE email = :email';
+              $stmt = $connect->prepare($sql);
+              echo "<script> alert('asdasdasd!')</script>";
+              $stmt->execute(array(':email' => $email));
+
+              // execute the statement
+              if ($stmt->execute()) {
                    $_SESSION["loggedIn"] = false;
                    $_SESSION['mensagem'] = 'Conta eliminada com sucesso';
                    header("Location: index.php");
-              }
-            }else {
-                echo "<script> alert('Password incorreta!')</script>";
-                $password = "";
-                $confirmarpass= "";
+          
+                }else{
+                  echo "<script> alert('Ocorreu um erro com a base de dados!')</script>";
+                  $password = "";
+                  $confirmarpass= "";
+                }
+
+              }else {
+                  echo "<script> alert('A password não corresponde á original!')</script>";
+                  $password = "";
+                  $confirmarpass= "";
               }
           }else{
                 echo "<script> alert('As passwords devem ser iguais')</script>";
@@ -282,7 +276,7 @@ body {
              Eliminar
           </button>
           <br>
-          <a href="index.php">
+          <a href="Perfil.php">
             <button class="voltar" style="align-content: center;" form="voltarform">
                 Cancelar
             </button>

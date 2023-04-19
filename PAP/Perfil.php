@@ -147,7 +147,7 @@ nav ul li ul li a:hover {
 
 .input-info {
     margin-top: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 input[type="text"],input[type="email"],input[type="password"],input[type="confirmarpass"]  {
@@ -167,11 +167,8 @@ th{
   text-align: left;
 }
 
-
 .button{
     padding: 5px;
-    margin-top: 16px;
-    width: 103px;
     border-radius: 6px;
     cursor: pointer;
     transition: 0.5s;
@@ -189,6 +186,7 @@ th{
     text-decoration:none;
     transition: 0.5s;
 }
+
 .alterarFuncoes:hover{
     color:purple;
 }
@@ -196,12 +194,17 @@ th{
 body{
     background-color: gray;
 }
+
 </style>
 
 </head>
 <body>
 <?php
     require 'conexao.php';
+
+    if($_SESSION["loggedIn"] == false){
+        header("Location: index.php");
+    }
 
     if($_SESSION['utilizador']==true){
        $nome= $_SESSION['utilizador'] [0];
@@ -328,13 +331,11 @@ body{
         </form>
     </div>
     <div>
-        <form action="" method="POST">
             <div class="input-info">
-                <label class="form-label">Email Utilizador</label><p>
-                <input type="text" name="email" <?php echo("value='$data[email]'") ?>>&nbsp
-                <button class="button" >Mudar Email</button>
+                <label class="form-label">Password Utilizador</label><p>
+                <input type="password" name="email" <?php echo("value='$data[password]'") ?> readonly>&nbsp
+                <a href="renamePass.php" > <button class="button">Mudar password</button> </a>
             </div>
-        </form>
     </div>
     <div>
         <div class="input-info">
@@ -383,13 +384,6 @@ body{
                 </tr>
             </table>
         </div>
-    </div>
-    <div>
-        <form action="" method="POST">
-            <div class="input-info">
-                <a class="alterarFuncoes" href="renamePass.php">Alterar password</button>
-            </div>
-        </form>
     </div>
     <div>
         <form action="" method="POST">

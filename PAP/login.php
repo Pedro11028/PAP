@@ -164,7 +164,7 @@ if (isset($_POST['submit'])) {
                     $_SESSION['utilizador'] = array($data['nome'], $data['email'], $data['password'], $data['Id_utilizador'], $data['imagemPerfil']);
                     $_SESSION["loggedIn"] = true;
                     
-                    echo '<script>window.location.replace("index.php")</script>';
+                    header("Location: index.php");
                     exit;
                 } else {
                     echo "<script>alert('Password não corresponde.')</script>";

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Play Games_registrar</title>
+    <title>Language Quizz- registro</title>
 
 <style type="text/css">
         
@@ -11,26 +11,26 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
-  }
+}
 
 
 form {
-  height: 400px;
-  width: 350px;
-  margin: 60px auto;
-  border-radius: 8px;
-  background: white;
+    height: 400px;
+    width: 350px;
+    margin: 60px auto;
+    border-radius: 8px;
+    background: white;
 }
 button{
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.58);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.58);
 }
 
 
 form p {
-  color: #828999;
-  font-size: 11px;
-  text-align: center;
-  margin-top: -19px;
+    color: #828999;
+    font-size: 11px;
+    text-align: center;
+    margin-top: -19px;
 }
 
 form p>a{color:#828999;text-decoration: none;transition: 0.3s }
@@ -41,8 +41,8 @@ form p>a:active{color: #1da1f2 }
 
 
 .input-info {
-  margin-top: 30px;
-  margin-bottom: 15px;
+    margin-top: 30px;
+    margin-bottom: 15px;
 }
 
 input[type="text"],input[type="email"],input[type="password"],input[type="confirmarpass"]  {
@@ -87,9 +87,9 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
 .log-sign .signup>a{color: #fff;text-decoration: none;}
 
 .log-sign button:hover{
-   background:none;
-   border:1px solid #828999;
-   color: #828999;
+    background:none;
+    border:1px solid #828999;
+    color: #828999;
 }
 
 .send{
@@ -107,17 +107,17 @@ input[type="text"],input[type="email"],input[type="password"],input[type="confir
 }
 
 .voltar{
-        padding: 10px;
-        margin-top: 16px;
-        background: #000000;
-        color: #fff;
-        width: 103px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.5s;
-        border: 1px solid #435688;
-        outline: none;
-        text-align: center;
+    padding: 10px;
+    margin-top: 16px;
+    background: #000000;
+    color: #fff;
+    width: 103px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid #435688;
+    outline: none;
+    text-align: center;
        }
 
 
@@ -167,7 +167,8 @@ if (isset($_POST['submit'])) {
                         // são guardadas duas sessions uma com as informações do utilizador e outra para confirmar que está dentro da conta
                         $_SESSION['utilizador'] = array($data['nome'], $data['email'], $data['password'], $data['Id_utilizador'], $data['imagemPerfil']);
                         $_SESSION["loggedIn"] = true;
-                        echo '<script>window.location.replace("index.php")</script>';
+
+                        header("Location: index.php");
                         exit;
                     } else {
                     echo "<script>alert('Woops! Esse utilizador já existe.')</script>";
@@ -193,16 +194,16 @@ if (isset($_POST['submit'])) {
         <input type="email" placeholder="E-mail" required autocomplete="off" validate name="email">
 
         <input type="password" placeholder="password" id="myInput" name="password" required="required">
-    <div class="log-sign">    
+        <div class="log-sign">    
             <button class="signup" type="submit" name="submit"> 
                Registrar
             </button>
             <br>
-            <a href="index.php">
-                <button class="voltar" style="align-content: center;" form="voltarform">
-                    Cancelar
-                </button>
-            </a>
-    </div>
-    </div>
 </form>
+        <a href="index.php">
+            <button class="voltar" style="align-content: center;" form="voltarform">
+                Cancelar
+            </button>
+        </a>
+</div>
+</div>
