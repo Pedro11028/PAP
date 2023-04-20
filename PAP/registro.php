@@ -4,128 +4,7 @@
     <meta charset="utf-8">
     <title>Language Quizz- registro</title>
 
-<style type="text/css">
-        
-* {
-    margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-}
-
-
-form {
-    height: 400px;
-    width: 350px;
-    margin: 60px auto;
-    border-radius: 8px;
-    background: white;
-}
-button{
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.58);
-}
-
-
-form p {
-    color: #828999;
-    font-size: 11px;
-    text-align: center;
-    margin-top: -19px;
-}
-
-form p>a{color:#828999;text-decoration: none;transition: 0.3s }
-form p>a:hover{color: #1da1f2}
-form p>a:active{color: #1da1f2 }
-
-
-
-
-.input-info {
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-input[type="text"],input[type="email"],input[type="password"],input[type="confirmarpass"]  {
-    border: 1px solid #828999;
-    padding: 10px;
-    border-radius: 5px;
-    width: 90%;
-    background: none;
-    margin: 5px 5px 5px 17px;
-    outline: none;
-    transition: 0.3s;
-    text-indent: 15px;
-    overflow: hidden;
-}
-
-.input-info input:hover{background: #435688}
-.input-info input[type="checkbox"] {margin-left: 17px;cursor: pointer;margin-top: 7px}
-.input-info span {color: #83899a;font-size: 11px;}
-.input-info span>a{color:#1da1f2 }
-.input-info span>a:hover{color:#fff }
-
-
-
-
-.log-sign{text-align: center;}
-.signup,
-.login{
-    padding: 10px;
-    margin-top: 16px;
-    background: #435688;
-    color: #fff;
-    width: 103px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.5s;
-    border: 1px solid #435688;
-    outline: none;
-}
-
-
-
-.log-sign .signup>a{color: #fff;text-decoration: none;}
-
-.log-sign button:hover{
-    background:none;
-    border:1px solid #828999;
-    color: #828999;
-}
-
-.send{
-    padding: 10px;
-    margin-top: 16px;
-    background: #435688;
-    color: #fff;
-    width: 103px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.5s;
-    border: 1px solid #435688;
-    outline: none;
-    margin-left: 32%
-}
-
-.voltar{
-    padding: 10px;
-    margin-top: 16px;
-    background: #000000;
-    color: #fff;
-    width: 103px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.5s;
-    border: 1px solid #435688;
-    outline: none;
-    text-align: center;
-       }
-
-
-body {
-  background-image: url('img/background.jpg') ;
-}
-
-</style>
+    <link rel="stylesheet" type="text/css" href="registro.css">
 
 </head>
 <body>
@@ -135,10 +14,14 @@ require 'conexao.php';
 if (isset($_POST['submit'])) {
     $errMsg = '';
     // Obter variáveis do FROM
-    $nome = $_POST['nome'];
+    $primeiroNome = $_POST['primeiroNome'];
+    $sobrenome= $_POST['sobrenome'];
+    $nomeUnico= $_POST['nomeUnico'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+
     $imagemPerfil = "img/perfilPadrao.png";
+    $nome= $primeiroNome." ".$sobrenome;
 
     try {
         // Verificar se os dados inseridos estão escritos corretamente
@@ -148,16 +31,26 @@ if (isset($_POST['submit'])) {
                 if (preg_match('/\s/', $password)|| strlen($password)<8) {
                     echo "<script>alert('Woops! Por favor digite um formato de password correto com mais de 8 letras.')</script>";
                 }else{
+
                     // Verificar se já existe algum utilizador com o mesmo email
                     $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE email = :email');
                     $stmt->execute(array(':email' => $email));
                     $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    //Se não existir então guarda os dados
+                    //Se não existir então verifica-se o nome único
                     if ($data == false) {
-                        $stmt = $connect->prepare('INSERT INTO utilizadores (nome, password, email, imagemPerfil) VALUES (:nome_utiliz, :pass_utiliz, :email_utiliz, :imagemPerfil)');
 
-                        $stmt->execute(array(':nome_utiliz' => $nome, ':pass_utiliz' => $password, ':email_utiliz' => $email, ':imagemPerfil' => $imagemPerfil));
+                        // Verificar se já existe algum utilizador com o mesmo nome Único
+                        $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE nomeUnico = :nomeUnico');
+                        $stmt->execute(array(':nomeUnico' => $nomeUnico));
+                        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        //Se não existir então guarda os dados
+                        if ($data == false) {
+
+                        $stmt = $connect->prepare('INSERT INTO utilizadores (nome, nomeUnico, password, email, imagemPerfil, permissao) VALUES (:nome_utiliz, :nomeUnico,:pass_utiliz, :email_utiliz, :imagemPerfil, :permissao)');
+
+                        $stmt->execute(array(':nome_utiliz' => $nome, ':nomeUnico' => $nomeUnico,':pass_utiliz' => $password, ':email_utiliz' => $email, ':imagemPerfil' => $imagemPerfil, ':permissao' => 0));
                         date_default_timezone_set('Etc/UTC');
 
                         $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE email = :email');
@@ -165,13 +58,17 @@ if (isset($_POST['submit'])) {
                         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                         // são guardadas duas sessions uma com as informações do utilizador e outra para confirmar que está dentro da conta
-                        $_SESSION['utilizador'] = array($data['nome'], $data['email'], $data['password'], $data['Id_utilizador'], $data['imagemPerfil']);
+                        $_SESSION['utilizador'] = array($data['nome'], $data['nomeUnico'],$data['email'], $data['password'], $data['Id_utilizador'], $data['imagemPerfil'], $data['permissao']);
+                        
                         $_SESSION["loggedIn"] = true;
 
                         header("Location: index.php");
                         exit;
+                        }else{
+                            echo "<script>alert('Woops! Esse Nome de utilizador já existe.')</script>";
+                        }
                     } else {
-                    echo "<script>alert('Woops! Esse utilizador já existe.')</script>";
+                    echo "<script>alert('Woops! Esse email já existe.')</script>";
                     
                     }
                 }
@@ -184,26 +81,44 @@ if (isset($_POST['submit'])) {
     
 ?>
 
-<form action="" method="POST" class="login-email">
-    <br>
-    <br>
+<form action="" method="POST" class="login-email"> 
+    <br><br>
+    <center>
+        <h2>Criar uma Conta</h2>
+    </center>
+
     <div class="input-info">
 
-        <input type="text" required="required" placeholder="nome" name="nome">
-
-        <input type="email" placeholder="E-mail" required autocomplete="off" validate name="email">
-
-        <input type="password" placeholder="password" id="myInput" name="password" required="required">
-        <div class="log-sign">    
+        &nbsp&nbsp&nbsp Nome Completo: 
+        <br>
+            <input class="nome" type="text" required="required" placeholder="Primeiro Nome" name="primeiroNome">
+            <input class="nome" type="text" required="required" placeholder="Sobrenome" name="sobrenome">
+        <br>
+        <br>
+        &nbsp&nbsp&nbsp Nome Utilizador:
+        <br>
+            <input class="nome" type="text" required="required" placeholder="Nome Único" name="nomeUnico">
+        <br>
+        <br>
+        &nbsp&nbsp&nbsp Email:
+        <br>
+            <input type="email" placeholder="E-mail" required autocomplete="off" validate name="email">
+        <br>
+        <br>
+        &nbsp&nbsp&nbsp Password:
+        <br>
+            <input type="password" placeholder="Password" id="myInput" name="password" required="required">
+        <div class="log-sign">
+        <br>
             <button class="signup" type="submit" name="submit"> 
                Registrar
             </button>
-            <br>
 </form>
+        &nbsp&nbsp&nbsp
         <a href="index.php">
             <button class="voltar" style="align-content: center;" form="voltarform">
                 Cancelar
             </button>
         </a>
-</div>
+        </div>
 </div>
