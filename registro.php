@@ -89,23 +89,16 @@ if (isset($_POST['submit'])) {
 
     <div class="input-info">
 
-        &nbsp&nbsp&nbsp Nome Completo: 
         <br>
-            <input class="nome" type="text" required="required" placeholder="Primeiro Nome" name="primeiroNome">
-            <input class="nome" type="text" required="required" placeholder="Sobrenome" name="sobrenome">
-        <br>
-        <br>
-        &nbsp&nbsp&nbsp Nome Utilizador:
-        <br>
-            <input class="nome" type="text" required="required" placeholder="Nome Único" name="nomeUnico">
+            <input class="nomeInteiro" type="text" required="required" placeholder="Primeiro Nome" name="primeiroNome">
+            <input class="nomeInteiro" type="text" required="required" placeholder="Sobrenome" name="sobrenome">
         <br>
         <br>
-        &nbsp&nbsp&nbsp Email:
+            <input type="text" required="required" placeholder="Nome Único" name="nomeUnico">
+        <br>
         <br>
             <input type="email" placeholder="E-mail" required autocomplete="off" validate name="email">
         <br>
-        <br>
-        &nbsp&nbsp&nbsp Password:
         <br>
             <input type="password" placeholder="Password" id="myInput" name="password" required="required">
         <div class="log-sign">

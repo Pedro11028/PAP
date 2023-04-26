@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <title>Language Quizz- Login</title>
 
-<link rel="stylesheet" type="text/css" href="login.css">
-
+<link rel="stylesheet" href="login.css">
 </head>
 <body>
 
@@ -20,7 +19,7 @@ if (isset($_POST['submit'])) {
     // Obter variáveis do from
     $email = $_POST['email'];
     $password = $_POST['password'];
-
+                    echo "<script>alert('$password')</script>";
         try {
 
             $stmt = $connect->prepare('SELECT * FROM utilizadores WHERE email = :email');
@@ -37,7 +36,7 @@ if (isset($_POST['submit'])) {
                     header("Location: index.php");
                     exit;
                 } else {
-                    echo "<script>alert('Password não corresponde.')</script>";
+                    echo "<script>alert('$password')</script>";
                 }
             }
         }
@@ -47,27 +46,28 @@ if (isset($_POST['submit'])) {
     }
 ?>
 
+
 <div id='AppendHere'></div>
 
+    <br>
+    <br>
+    <br>
 <form action="" method="POST">
+
     <br>
     <br>
     <br>
     <center>
         <h2>Bem vindo de volta</h2>
     </center>
-    <br>
     
     <div class="input-info">
 
-                &nbsp&nbsp&nbsp Email:
         <br>
             <input type="email" placeholder="E-mail" required autocomplete="off" validate name="email">
         <br>
         <br>
-        &nbsp&nbsp&nbsp Password:
-        <br>
-            <input required="required" type="password" placeholder="passsword" id="myInput" name="Password">
+            <input required="required" type="password" placeholder="passsword" id="myInput" name="password">
         <div class="log-sign">
         <br>
       

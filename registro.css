@@ -7,8 +7,8 @@
 
 
 form {
-    height: 520px;
-    width: 550px;
+    height: 480px;
+    width: 450px;
     margin: 60px auto;
     color: #A4B2B8;
     border-radius: 8px;
@@ -34,7 +34,7 @@ input,input[type="email"],input[type="password"],input[type="confirmarpass"]  {
     border: 1px solid #828999;
     padding: 10px;
     border-radius: 5px;
-    width: 92   %;
+    width: 92%;
     background: none;
     margin: 5px 5px 5px 17px;
     outline: none;
@@ -44,8 +44,8 @@ input,input[type="email"],input[type="password"],input[type="confirmarpass"]  {
     color: white;
 }
 
-input[type="text"]{
-    width: 242px;
+input[type="text"].nomeInteiro{
+    width: 193px;
     background: none;
     margin: 5px 5px 5px 17px;
     outline: none;
@@ -55,11 +55,13 @@ input[type="text"]{
     color: white;
 }
 
-.input-info input:hover{
-    background: #435688
+input:hover::placeholder{
+color:  white;
 }
 
-.log-sign{text-align: center;}
+.log-sign{
+    text-align: center;
+}
 .signup,
 .login{
     padding: 10px;
