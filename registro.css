@@ -55,9 +55,6 @@ input[type="text"].nomeInteiro{
     color: white;
 }
 
-input:hover::placeholder{
-color:  white;
-}
 
 .log-sign{
     text-align: center;

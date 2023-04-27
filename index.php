@@ -20,31 +20,14 @@ if(!empty($_SESSION['mensagem'])) {
 }	
 
 if($_SESSION['utilizador']==true){
-    $nome= $_SESSION['utilizador'] [0];
-    $nomeUnico=$_SESSION['utilizador'] [1];
-    $email= $_SESSION['utilizador'] [2];
-    $password= $_SESSION['utilizador'] [3];
-    $permissao= $_SESSION['utilizador'] [6];
+    $nome= $_SESSION['utilizador'] [1];
+    $nomeUnico=$_SESSION['utilizador'] [2];
+    $email= $_SESSION['utilizador'] [3];
+    $password= $_SESSION['utilizador'] [4];
+    $permissao= $_SESSION['utilizador'] [7];
 }
 
 $_SESSION['resgistrar']=false;
-
-if (isset($_POST['aceitar'])) {
-    if(!isset($_COOKIE['cookie'])){
-      setcookie('cookie', time()+60*60*24*30);
-      echo '<script>alert(\'Cookies adicionados com sucesso)\');</script>';
-      header('Location: refreshCookie.php');
-    }
-}
-
-if (isset($_SESSION['recusar']) && (time() - $_SESSION['recusar'] > 60*60*24*30)){
-      unset($_SESSION['recusar']);
-}else{
-    if (isset($_POST['negar'])) {
-        $_SESSION['recusar']= time();
-        header('Location: refreshCookie.php');
-    }
-}
 
 ?>
 
@@ -63,7 +46,7 @@ if (isset($_SESSION['recusar']) && (time() - $_SESSION['recusar'] > 60*60*24*30)
         </form>
 
         <?php if($_SESSION['loggedIn']==true):?>
-          <li class="criarQuizz"><a href="criarQuiz.php">Criar um Quizz</a></li>
+          <li class="criarQuizz"><a href="escolherTipoQuizz.php">Criar um Quizz</a></li>
         <?php endif; ?>
 
         <?php if($_SESSION['loggedIn']==true):?>

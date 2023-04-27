@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26-Abr-2023 às 17:54
+-- Tempo de geração: 27-Abr-2023 às 17:53
 -- Versão do servidor: 10.4.21-MariaDB
 -- versão do PHP: 8.0.11
 
@@ -108,6 +108,19 @@ CREATE TABLE `quizzes_respondidos` (
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `respostas`
+--
+
+CREATE TABLE `respostas` (
+  `Id_resposta` int(11) NOT NULL,
+  `Id_questao` int(11) NOT NULL,
+  `respostaQuizz` varchar(250) DEFAULT NULL,
+  `valorResposta` int(3) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `utilizadores`
 --
 
@@ -122,6 +135,14 @@ CREATE TABLE `utilizadores` (
   `pontuacao` int(11) DEFAULT NULL,
   `permissao` varchar(12) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `utilizadores`
+--
+
+INSERT INTO `utilizadores` (`Id_utilizador`, `nomeCompleto`, `nomeUnico`, `email`, `password`, `imagemPerfil`, `dataBan`, `pontuacao`, `permissao`) VALUES
+(9, 'Pedro Oliveira', 'Pedr0siris', 'pedro@gmail.com', 'qaws1234', 'img/perfilPadrao.png', NULL, NULL, '0'),
+(14, 'peowsd isin', 'pedros', 'uagysd@hsh.com', 'trfghudc', 'img/perfilPadrao.png', NULL, NULL, '0');
 
 --
 -- Índices para tabelas despejadas
@@ -172,6 +193,13 @@ ALTER TABLE `quizzes_respondidos`
   ADD KEY `Id_quizz` (`Id_quizz`);
 
 --
+-- Índices para tabela `respostas`
+--
+ALTER TABLE `respostas`
+  ADD PRIMARY KEY (`Id_resposta`,`Id_questao`),
+  ADD KEY `Id_questao` (`Id_questao`);
+
+--
 -- Índices para tabela `utilizadores`
 --
 ALTER TABLE `utilizadores`
@@ -218,10 +246,16 @@ ALTER TABLE `quizzes_respondidos`
   MODIFY `Id_quizzRespondido` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de tabela `respostas`
+--
+ALTER TABLE `respostas`
+  MODIFY `Id_resposta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `utilizadores`
 --
 ALTER TABLE `utilizadores`
-  MODIFY `Id_utilizador` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_utilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restrições para despejos de tabelas
@@ -264,6 +298,12 @@ ALTER TABLE `quizzes`
 ALTER TABLE `quizzes_respondidos`
   ADD CONSTRAINT `quizzes_respondidos_ibfk_1` FOREIGN KEY (`Id_utilizador`) REFERENCES `utilizadores` (`Id_utilizador`),
   ADD CONSTRAINT `quizzes_respondidos_ibfk_2` FOREIGN KEY (`Id_quizz`) REFERENCES `quizzes` (`Id_quizz`);
+
+--
+-- Limitadores para a tabela `respostas`
+--
+ALTER TABLE `respostas`
+  ADD CONSTRAINT `respostas_ibfk_1` FOREIGN KEY (`Id_questao`) REFERENCES `questoes` (`Id_questao`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
